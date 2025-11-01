@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyUnit AI | أداة الحجز الذكية</title>
+
+  <!-- مكتبة ScrollReveal -->
+  <script src="https://unpkg.com/scrollreveal"></script>
+
+  <style>
+    body {
+      background-color: #000000; /* خلفية سوداء */
+      color: #FFD369; /* لون ذهبي للنصوص العامة */
+      font-family: "Tajawal", sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+    }
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+      background: linear-gradient(135deg, #000000, #1a1a1a);
+      color: #FFD369;
+    }
+    header h1 {
+      font-size: 2.5em;
+      color: #FFD369;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #FFD369aa;
+    }
+    header p:nth-child(3) {
+      font-size: 1em;
+      margin-top: 5px;
+      color: #ffd369cc; /* ذهبي شفاف */
+      font-weight: 600;
+    }
+    header p:nth-child(4) {
+      font-size: 1.2em;
+      color: #e6c45e;
+      margin: 10px 0 0;
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: 40px auto;
+      background-color: #121212;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #a88530aa;
+      color: #FFD369;
+    }
+    .cards {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .card {
+      background: #1a1a1a;
+      border: 1px solid #a88530;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      transition: 0.3s;
+      color: #FFD369;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px #FFD369cc;
+    }
+    .price {
+      font-size: 1.5em;
+      color: #FFD369;
+      margin: 10px 0;
+    }
+    .btn {
+      background: #a88530;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #a88530cc;
+    }
+    .btn:hover {
+      background: #ffd369;
+      color: #000;
+      box-shadow: 0 0 15px #ffd369cc;
+    }
+    .counter h3 {
+      font-size: 2em;
+      color: #ffd369;
+      text-shadow: 0 0 10px #a88530aa;
+    }
+    .features .feature i {
+      font-size: 40px;
+      color: #a88530;
+      text-shadow: 0 0 5px #ffd369bb;
+    }
+    .testimonial {
+      background: #1a1a1a;
+      border-radius: 15px;
+      padding: 30px;
+      color: #ffd369cc;
+      box-shadow: 0 0 15px #a88530cc;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #000;
+      color: #a88530;
+      font-size: 0.9em;
+      border-top: 1px solid #a88530;
+    }
+    /* نموذج الذكاء الصناعي */
+    .ai-box {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .ai-input {
+      width: 80%;
+      max-width: 400px;
+      padding: 10px;
+      border-radius: 25px;
+      border: none;
+      margin-bottom: 10px;
+    }
+    .ai-answer {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 600px;
+      display: none;
+      color: #ffd369;
+    }
+
+    /* الحركة التمهيدية */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .scroll-animated {
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+
+    /* زر تشغيل الصوت خلف الفيديو */
+    #playButton {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #FFD369;
+      color: #0B132B;
+      font-size: 2.5em;
+      padding: 20px 40px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10000;
+      box-shadow: 0 0 15px #FFD369;
+      user-select: none;
+    }
+
+    /* الفيديو الخلفي */
+    #bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100vw;
+      min-height: 100vh;
+      z-index: -1;
+      object-fit: cover;
+      background-color: black;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- فيديو الخلفية -->
+  <video autoplay loop playsinline muted id="bgVideo">
+    <source src="FDownloader.Net_AQM0-pbRtYClmGxSW2LlhHr4yU0_iPsFti2n8GmdvQ1hKxo1RjDGfQ31VA_JJxCfPIqNXodfPKAoA200lPiTthUr8KszVmWKcIl4HQI89vCVvA_720p_(HD).mp4" type="video/mp4" />
+    متصفحك لا يدعم فيديو الخلفية.
+  </video>
+
+  <!-- زر تشغيل الصوت -->
+  <div id="playButton">اضغط لتشغيل الصوت</div>
+
+  <header class="scroll-animated">
+    <h1>شركة <span class="highlight">SkyUnit AI</span></h1>
+    <p>٤ دول تجتمع لخدمة نجاحك في الحصول على ما تريد مع</p>
+    <p>نقود ثورة التحول الرقمي باستخدام أقوى أدوات الذكاء الاصطناعي في العالم</p>
+  </header>
+
+  <section id="booking" class="scroll-animated">
+    <h2>🧠 أداة الحجز الاحترافية</h2>
+    <p>نظام حجز ذكي يعتمد على الذكاء الاصطناعي لتحقيق أسرع وأدق نتائج حجز في مصر.</p>
+  </section>
+
+  <section id="numbers" class="scroll-animated">
+    <h2>📊 النتائج بالأرقام</h2>
+    <div class="cards">
+      <div class="counter">
+        <h3>+10,000</h3>
+        <p>عملية حجز ناجحة</p>
+      </div>
+      <div class="counter">
+        <h3>+2,000</h3>
+        <p>عميل موثوق</p>
+      </div>
+      <div class="counter">
+        <h3>0.8 ثانية</h3>
+        <p>سرعة التنفيذ</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="why" class="scroll-animated">
+    <h2>🚀 لماذا <span class="highlight">SkyUnit AI</span>؟</h2>
+    <div class="features">
+      <div class="feature"><i>⚡</i><p>سرعة تفوق المنافسين</p></div>
+      <div class="feature"><i>🔒</i><p>حماية بيانات متقدمة</p></div>
+      <div class="feature"><i>🤖</i><p>نظام ذكاء صناعي متطور</p></div>
+      <div class="feature"><i>💼</i><p>دعم فني 24/7</p></div>
+    </div>
+  </section>
+
+  <section id="testimonials" class="scroll-animated">
+    <h2>💬 آراء العملاء</h2>
+    <div class="testimonials">
+      <div class="testimonial-slide" id="testimonialSlide">
+        <div class="testimonial">"نظام أكثر من رائع! قدر يحجز لي في ثواني."</div>
+        <div class="testimonial">"خدمة عملاء محترفة وسريعة جدًا."</div>
+        <div class="testimonial">"أذكى نظام حجز جربته في حياتي!"</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="scroll-animated">
+    <h2>💎 باقات الأسعار</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>الباقة الفضية</h3>
+        <p class="price">20,000 جنيه</p>
+        <p>اختيار 30 وحدة سكنية وحجز واحدة تلقائيًا.</p>
+        <button class="btn">اشترِ الآن</button>
+      </div>
+      <div class="card">
+        <h3>الباقة الذهبية</h3>
+        <p class="price">30,000 جنيه</p>
+        <p>اختيار 10 وحدات سكنية وحجز واحدة تلقائيًا.</p>
+        <button class="btn">اشترِ الآن</button>
+      </div>
+      <div class="card">
+        <h3>الباقة الألماسية</h3>
+        <p class="price">50,000 جنيه</p>
+        <p>اختيار وحدة واحدة ويتم حجزها فورًا.</p>
+        <button class="btn">اشترِ الآن</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="ai-box scroll-animated">
+    <h2>🤖 اسأل ذكاء SkyUnit</h2>
+    <div id="aiAnswer" class="ai-answer"></div>
+    <input type="text" id="aiQuestion" class="ai-input" placeholder="اكتب سؤالك هنا..." />
+    <button class="btn" onclick="getAIAnswer()">إرسال</button>
+  </section>
+
+  <section class="contact scroll-animated">
+    <h2>📞 للتواصل معنا</h2>
+    <p>01114314785 – 01114314786</p>
+    <p><a href="https://web.facebook.com/Skyunitai" target="_blank" style="color:#FFD369;">اضغط هنا للتواصل عبر فيسبوك</a></p>
+  </section>
+
+  <footer>
+    <p>© 2025 SkyUnit AI – All Rights Reserved</p>
+    <small>Powered by the Future of AI</small>
+  </footer>
+
+  <script>
+    // تشغيل الفيديو مع الصوت بعد الضغط على الزر
+    const video = document.getElementById("bgVideo");
+    const playBtn = document.getElementById("playButton");
+
+    playBtn.addEventListener("click", () => {
+      video.muted = false;
+      video.play();
+      playBtn.style.display = "none";
+    });
+
+    // سلايدر آراء العملاء
+    let index = 0;
+    const slide = document.getElementById("testimonialSlide");
+    const total = slide.children.length;
+    setInterval(() => {
+      index = (index + 1) % total;
+      slide.style.transform = `translateX(-${index * 100}%)`;
+    }, 3000);
+
+    // تأثير ScrollReveal للعناصر
+    ScrollReveal().reveal(".scroll-animated", {
+      delay: 200,
+      distance: "40px",
+      duration: 1000,
+      origin: "bottom",
+      interval: 200,
+      reset: false,
+    });
+
+    // نموذج الذكاء الصناعي (بدون API Key)
+    function getAIAnswer() {
+      const question = document.getElementById("aiQuestion").value.trim();
+      const answerBox = document.getElementById("aiAnswer");
+      if (!question) return;
+      const responses = [
+        "سؤال رائع! النظام يعتمد على خوارزميات ذكاء متقدمة لضمان دقة النتائج.",
+        "نعم، تم تصميم النظام ليعمل بأعلى سرعة وكفاءة.",
+        "تأكد أن بياناتك محمية بالكامل ضمن نظام SkyUnit.",
+        "هدفنا دائمًا هو تسهيل كل خطوة باستخدام الذكاء الاصطناعي.",
+      ];
+      const randomAnswer = responses[Math.floor(Math.random() * responses.length)];
+      answerBox.style.display = "block";
+      answerBox.innerText = randomAnswer;
+    }
+  </script>
+</body>
+</html>
